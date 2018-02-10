@@ -11,7 +11,7 @@ from util import countries
 store_server = str("itunes.apple.com")
 
 # Your App ID. Located at iTunesConnect.
-AppID = str("1062002496")
+AppID = str("APP-ID-HERE")
 # Your App Category inside Mac App Store
 genre = mac.MacAppStoreGenre.Productivity
 # Stores
