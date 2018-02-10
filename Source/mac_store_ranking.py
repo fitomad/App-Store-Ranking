@@ -96,4 +96,4 @@ for country in store_countries:
     print("\t{0:20.17}{1:>10}{2:>10}{3:>10}".format(country[2], posicion_free, posicion_paid, posicion_grossing))
 
 print("\r\n\t{0:^50}".format("A script by @fitomad."))
-print("\t{0:^50}\r\n".format("GitHub: https://github.com/fitomad"))
+print("\t{0:^50}\r\n".format("GitHub: https://github.com/fitomad/App-Store-Ranking"))
