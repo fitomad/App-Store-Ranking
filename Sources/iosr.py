@@ -12,20 +12,6 @@ from util import countries, platforms
 
 store_server = str("itunes.apple.com")
 
-# Your App ID. Located at iTunesConnect.
-AppID = str("1274472115")
-# Your App Category inside App Store
-genre = ios.AppStoreGenre.Productivity
-# Stores
-store_countries = countries.AppleWorld
-
-# Procesamos los paises
-
-# Select all countries availables (True)
-store_countries = filter(lambda country: country[0] == True, store_countries)
-# Sorted by country name
-store_countries.sort(key=lambda country: country[2])
-
 """
 Top free iPhone & iPad app ranking
 """
