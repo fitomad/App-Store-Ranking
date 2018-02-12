@@ -62,3 +62,4 @@ To figure out the code related to yout app category type `python macr.py` in you
 
 ## Contact
 
+Comments and suggestions are welcome. Find me on twitter at [@fitomad](https://twitter.com/fitomad)
