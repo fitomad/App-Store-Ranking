@@ -1,7 +1,7 @@
 # App-Store-Ranking
 Obtain your app ranking in realtime inside App Store and Mac App Store for every country
 
-![License MIT](https://img.shields.io/github/license/mashape/apistatus.svg) ![Python 2.7](https://img.shields.io/badge/python-2.7-blue.svg) ![macOS 10.13](https://img.shields.io/badge/macOS-10.13-orange.svg) ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-1.20-red.svg)
+![License MIT](https://img.shields.io/github/license/mashape/apistatus.svg) ![Python 2.7](https://img.shields.io/badge/python-2.7-blue.svg) ![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg) ![macOS 10.13](https://img.shields.io/badge/macOS-10.13-orange.svg) ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-1.20-red.svg)
 
 ![Terminal](https://github.com/fitomad/App-Store-Ranking/blob/master/Images/terminal.png)
 
