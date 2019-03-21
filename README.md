@@ -29,6 +29,16 @@ python iosr.py
 python macr.py
 ```
 
+## Packages
+
+If you have an error related to enums maybe you have to install **enum34** module to obtain compatibility. Type this on your Terminal or Command Prompt
+
+```bash
+pip instal enum34
+```
+
+Mac and Linux user maybe have to prefix command with `sudo`
+
 ### App Store Ranking. Parameters
 
 To obtain an application ranking inside the App Store you have to type this command in Terminal or Command Prompt
