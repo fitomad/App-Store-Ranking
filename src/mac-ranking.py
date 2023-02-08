@@ -2,80 +2,19 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import json
-import http.client
-import datetime
 import argparse
 
-from genres import mac
-from util import countries
+from util import countries, genres, common
 
-store_server = str("itunes.apple.com")
 
-def make_store_uri(country_code: str, genre: str, section: str) -> str:
-    store_uri = f"/WebObjects/MZStoreServices.woa/ws/charts?cc={country_code}&g={genre}&name={section}&limit=400"
-
-    return store_uri
-
-    
-
-def ranking_free(iso_code):
+def ranking(iso_code, section):
     """
-    Top free Mac app ranking
+    Mac App Store ranking for a country and a section
     """
-    store_uri = make_store_uri(iso_code, str(genre.value), "FreeMacApps")
-    
-    return request_url(store_uri)
+    store_uri = common.make_store_uri(iso_code, str(genre.value), section)
+    position = common.fetch(store_uri, AppID)
 
-
-def ranking_paid(iso_code):
-    """
-    Top paid Mac applications
-    """
-    store_uri = make_store_uri(iso_code, str(genre.value), "PaidMacApps")
-    
-    return request_url(store_uri)
-
-
-def ranking_grossing(iso_code):
-    """
-    Top grossing Mac applications
-    """
-    store_uri = make_store_uri(iso_code, str(genre.value), "MacAppsByRevenue")
-    
-    return request_url(store_uri)
-
-"""
-Request an URL
-"""
-def request_url(url):
-    conn = http.client.HTTPSConnection(store_server)
-    headers = { "Cache-Control" : "no-cache" }
-    conn.request("GET", url, None, headers)
-    r1 = conn.getresponse()
-
-    data1 = r1.read()
-
-    ranking = json.loads(data1)
-
-    conn.close()
-
-    # JSON document
-    posicion = process_result(ranking)
-
-    return posicion
-
-"""
-Process JSON and recover results
-"""
-def process_result(result):
-    entries = result["resultIds"]
-
-    try:
-        position = entries.index(AppID)
-        return (position + 1)
-    except ValueError:
-        return "---"
+    return position
 
 
 def print_parameters():
@@ -84,7 +23,7 @@ def print_parameters():
     """
     print("\r\n\t{0:^26}\r\n".format("Mac App Store Categories"))
 
-    for genre in mac.MacAppStoreGenre:
+    for genre in genres.MacAppStoreGenre:
         print("\t{0:^20} = {1:<6}".format(genre.name, genre.value))
 
     
@@ -92,7 +31,7 @@ def print_parameters():
     print("\t{0:^20} = {1:<6}".format("All countries", "world"))
     print("\t{0:^20} = {1:<6}\r\n".format("Top 10 (by revenue)", "top"))
 
-    print("\tExample: macr.py -appid 123456789 -category 12014 -stores top\r\n")
+    print("\tExample: mac-ranking.py -appid 123456789 -category 12014 -stores top\r\n")
     
 #
 # Workflow.
@@ -133,7 +72,7 @@ store_countries.sort(key=lambda country: country[2])
 
 # App category
 try:
-    genre = mac.MacAppStoreGenre(args.category)
+    genre = genres.MacAppStoreGenre(args.category)
 except ValueError:
     print_parameters()
     print("\tCategory not available. Take a look at category section above.\r\n")
@@ -148,11 +87,11 @@ print("\r\n\t{0:^50}\r\n".format("Mac App Store. Ranking"))
 print("\t{0:20}{1:>10}{2:>10}{3:>10}\r\n".format("Country", "Free", "Paid", "Grossing"))
 
 for country in store_countries:
-    posicion_free = ranking_free(country[1])
-    posicion_paid = ranking_paid(country[1])
-    posicion_grossing = ranking_grossing(country[1])
+    position_free = ranking(country[1], "FreeMacApps")
+    position_paid = ranking(country[1], "PaidMacApps")
+    position_grossing = ranking(country[1], "MacAppsByRevenue")
 
-    print("\t{0:20.17}{1:>10}{2:>10}{3:>10}".format(country[2], posicion_free, posicion_paid, posicion_grossing))
+    print("\t{0:20.17}{1:>10}{2:>10}{3:>10}".format(country[2], position_free, position_paid, position_grossing))
 
 print("\r\n\t{0:^50}".format("A script by @fitomad."))
 print("\t{0:^50}\r\n".format("GitHub: https://github.com/fitomad/App-Store-Ranking"))

@@ -2,15 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sys
-import json
-import http.client
-import datetime
 import argparse
 
-from genres import ios
-from util import countries, platforms
-
-store_server = str("itunes.apple.com")
+from util import countries, platforms, genres, common
 
 
 def ranking_free(iso_code, platform, genre):
@@ -26,9 +20,9 @@ def ranking_free(iso_code, platform, genre):
     else:
         store_section = "FreeAppleTVApps"
 
+    store_uri = common.make_store_uri(iso_code, genre, store_section)
     
-    store_uri = "/WebObjects/MZStoreServices.woa/ws/charts?cc={0}&g={1}&name={2}&limit=400".format(iso_code, genre, store_section)
-    return request_url(store_uri)
+    return common.fetch(store_uri, AppID)
 
 
 def ranking_paid(iso_code, platform, genre):
@@ -42,9 +36,9 @@ def ranking_paid(iso_code, platform, genre):
     else:
         store_section = "PaidAppleTVApps"
 
-    store_uri = "/WebObjects/MZStoreServices.woa/ws/charts?cc={0}&g={1}&name={2}&limit=400".format(iso_code, genre, store_section)
-    
-    return request_url(store_uri)
+    store_uri = common.make_store_uri(iso_code, genre, store_section)
+
+    return common.fetch(store_uri, AppID)
 
 
 def ranking_grossing(iso_code, platform, genre):
@@ -58,43 +52,9 @@ def ranking_grossing(iso_code, platform, genre):
     else:
         store_section = "AppleTVAppsByRevenue"
 
-    store_uri = f"/WebObjects/MZStoreServices.woa/ws/charts?cc={iso_code}&g={genre}&name={store_section}&limit=400"
+    store_uri = common.make_store_uri(iso_code, genre, store_section)
     
-    return request_url(store_uri)
-
-
-def request_url(url):
-    """
-    Request an URL
-    """
-    conn = http.client.HTTPSConnection(store_server)
-    headers = { "Cache-Control" : "no-cache" }
-    conn.request("GET", url, None, headers)
-    r1 = conn.getresponse()
-
-    data1 = r1.read()
-
-    ranking = json.loads(data1)
-
-    conn.close()
-
-    # JSON document
-    posicion = process_result(ranking)
-
-    return posicion
-
-
-def process_result(result):
-    """
-
-    """
-    entries = result["resultIds"]
-
-    try:
-        position = entries.index(AppID)
-        return (position + 1)
-    except ValueError:
-        return "---"
+    return common.fetch(store_uri, AppID)
 
 
 def print_parameters():
@@ -103,7 +63,7 @@ def print_parameters():
     """
     print("\r\n\t{0:^26}\r\n".format("App Store Categories"))
 
-    for genre in ios.AppStoreGenre:
+    for genre in genres.AppStoreGenre:
         print("\t{0:^20} = {1:<6}".format(genre.name, genre.value))
 
     
@@ -116,7 +76,7 @@ def print_parameters():
     print("\t{0:^20} = {1:<6}".format("iPad", "ipad"))
     print("\t{0:^20} = {1:<6}\r\n".format("Apple TV", "appleTV"))
 
-    print("\tExample: iosr.py -appid 123456789 -category 12014 -stores top -platform iphone\r\n")
+    print("\tExample: ios-ranking.py -appid 123456789 -category 12014 -stores top -platform iphone\r\n")
 
 #
 # Workflow
@@ -159,7 +119,7 @@ store_countries.sort(key=lambda country: country[2])
 # App category
 
 try:
-    genre = ios.AppStoreGenre(args.category)
+    genre = genres.AppStoreGenre(args.category)
 except ValueError:
     print_parameters()
     print("\tCategory not available. Take a look at category section above.\r\n")
