@@ -3,7 +3,7 @@
 
 import sys
 import json
-import httplib
+import http.client
 import datetime
 import argparse
 
@@ -12,10 +12,11 @@ from util import countries, platforms
 
 store_server = str("itunes.apple.com")
 
-"""
-Top free iPhone & iPad app ranking
-"""
+
 def ranking_free(iso_code, platform, genre):
+    """
+    Top free iPhone & iPad app ranking
+    """
     store_section = str()
 
     if platform == platforms.iOSPlatform.iPhone.value:
@@ -29,10 +30,11 @@ def ranking_free(iso_code, platform, genre):
     store_uri = "/WebObjects/MZStoreServices.woa/ws/charts?cc={0}&g={1}&name={2}&limit=400".format(iso_code, genre, store_section)
     return request_url(store_uri)
 
-"""
-Top paid iPhone & iPad app ranking
-"""
+
 def ranking_paid(iso_code, platform, genre):
+    """
+    Top paid iPhone & iPad app ranking
+    """
     if platform == platforms.iOSPlatform.iPhone.value:
         store_section = "PaidApplications"
     elif platform == platforms.iOSPlatform.iPad.value:
@@ -44,10 +46,11 @@ def ranking_paid(iso_code, platform, genre):
     
     return request_url(store_uri)
 
-"""
-Top grossing iPhone & iPad app ranking
-"""
+
 def ranking_grossing(iso_code, platform, genre):
+    """
+    Top grossing iPhone & iPad app ranking
+    """
     if platform == platforms.iOSPlatform.iPhone.value:
         store_section = "AppsByRevenue"
     elif platform == platforms.iOSPlatform.iPad.value:
@@ -55,16 +58,18 @@ def ranking_grossing(iso_code, platform, genre):
     else:
         store_section = "AppleTVAppsByRevenue"
 
-    store_uri = "/WebObjects/MZStoreServices.woa/ws/charts?cc={0}&g={1}&name={2}&limit=400".format(iso_code, genre, store_section)
+    store_uri = f"/WebObjects/MZStoreServices.woa/ws/charts?cc={iso_code}&g={genre}&name={store_section}&limit=400"
     
     return request_url(store_uri)
 
-"""
-Request an URL
-"""
+
 def request_url(url):
-    conn = httplib.HTTPSConnection(store_server)
-    conn.request("GET", url)
+    """
+    Request an URL
+    """
+    conn = http.client.HTTPSConnection(store_server)
+    headers = { "Cache-Control" : "no-cache" }
+    conn.request("GET", url, None, headers)
     r1 = conn.getresponse()
 
     data1 = r1.read()
@@ -78,10 +83,11 @@ def request_url(url):
 
     return posicion
 
-"""
 
-"""
 def process_result(result):
+    """
+
+    """
     entries = result["resultIds"]
 
     try:
@@ -90,10 +96,11 @@ def process_result(result):
     except ValueError:
         return "---"
 
-"""
-Print help information
-"""
+
 def print_parameters():
+    """
+    Print help information
+    """
     print("\r\n\t{0:^26}\r\n".format("App Store Categories"))
 
     for genre in ios.AppStoreGenre:
@@ -145,7 +152,7 @@ else:
     sys.exit()
 
 # Select all countries availables (True)
-store_countries = filter(lambda country: country[0] == True, store_countries)
+store_countries = [country for country in store_countries if country[0] == True]
 # Sorted by country name
 store_countries.sort(key=lambda country: country[2])
 

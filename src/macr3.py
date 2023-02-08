@@ -12,26 +12,36 @@ from util import countries
 
 store_server = str("itunes.apple.com")
 
-"""
-Top free Mac app ranking
-"""
+def make_store_uri(country_code: str, genre: str, section: str) -> str:
+    store_uri = f"/WebObjects/MZStoreServices.woa/ws/charts?cc={country_code}&g={genre}&name={section}}&limit=400"
+
+    return store_uri
+
+    
+
 def ranking_free(iso_code):
-    store_uri = "/WebObjects/MZStoreServices.woa/ws/charts?cc={0}&g={1}&name=FreeMacApps&limit=400".format(iso_code, str(genre.value))
-
+    """
+    Top free Mac app ranking
+    """
+    store_uri = make_store_uri(iso_code, str(genre.value), "FreeMacApps")
+    
     return request_url(store_uri)
 
-"""
-Top paid Mac applications
-"""
+
 def ranking_paid(iso_code):
-    store_uri = "/WebObjects/MZStoreServices.woa/ws/charts?cc={0}&g={1}&name=PaidMacApps&limit=400".format(iso_code, str(genre.value))
+    """
+    Top paid Mac applications
+    """
+    store_uri = make_store_uri(iso_code, str(genre.value), "PaidMacApps")
+    
     return request_url(store_uri)
 
-"""
-Top grossing Mac applications
-"""
+
 def ranking_grossing(iso_code):
-    store_uri = "/WebObjects/MZStoreServices.woa/ws/charts?cc={0}&g={1}&name=MacAppsByRevenue&limit=400".format(iso_code, str(genre.value))
+    """
+    Top grossing Mac applications
+    """
+    store_uri = make_store_uri(iso_code, str(genre.value), "MacAppsByRevenue")
     
     return request_url(store_uri)
 
@@ -67,10 +77,11 @@ def process_result(result):
     except ValueError:
         return "---"
 
-"""
-Print help information
-"""
+
 def print_parameters():
+    """
+    Print help information
+    """
     print("\r\n\t{0:^26}\r\n".format("Mac App Store Categories"))
 
     for genre in mac.MacAppStoreGenre:
