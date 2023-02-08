@@ -13,7 +13,7 @@ from util import countries
 store_server = str("itunes.apple.com")
 
 def make_store_uri(country_code: str, genre: str, section: str) -> str:
-    store_uri = f"/WebObjects/MZStoreServices.woa/ws/charts?cc={country_code}&g={genre}&name={section}}&limit=400"
+    store_uri = f"/WebObjects/MZStoreServices.woa/ws/charts?cc={country_code}&g={genre}&name={section}&limit=400"
 
     return store_uri
 
